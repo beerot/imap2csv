@@ -1,0 +1,12 @@
+# Ignore configuration file
+config.ini
+
+# Don't save log files
+logs/*
+
+# Emacs temp files
+\#*\#
+
+# VIM temp and swap files
+*~
+.*.sw?
