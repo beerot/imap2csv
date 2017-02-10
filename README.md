@@ -1,7 +1,7 @@
 # imap2csv
 
-imap2csv has been written to process mails following a given format and
-parse them into a comma separated file.
+imap2csv is written as a command line script to process mails following a given
+format and parse them into a comma separated file.
 
 What the script will do is find lines in the email that starts with given
 keywords and a colon (:) and put the rest of the line in the CSV file. 

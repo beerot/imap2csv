@@ -10,14 +10,17 @@ $config_file = 'config/config.ini';
 function main() 
 {
     global $config_file;
-    $orders = []; // An array that keeps one row per order
+    $orders = []; // An array that keeps one row per parsed mail
 
-    $config = get_config($config_file);
+    if($config = @get_config($config_file) == false)
+    {
+        die("Could not read configuration file.\n");
+    }
 
     // Open connection to IMAP server
-    $inbox = imap_open($config['hostname'], $config['username'], $config['password'])
-        or die("Couldn't connect to mail server.");
-
+      $inbox = @imap_open($config['hostname'], $config['username'], $config['password'])
+        or die("Couldn't connect to mail server.\n");
+    
     // Get the emails that interest us
     $emails = imap_search($inbox, "FROM " . $config['sender']);
 
@@ -32,9 +35,6 @@ function main()
     } else {
         echo "No new mails.\n";
     }
-
-    // Remove moved emails
-    imap_expunge($inbox);
 
     // Close imap handle
     imap_close($inbox);
@@ -84,8 +84,16 @@ function get_config($config_file)
     // We don't parse section names in our config file so instead of
     // $config['mail']['hostname'] we only get $config['hostname']
 
+    // Older versions return empty array on failure while PHP 5.2.7 and
+    // newer returns FALSE
     $config = parse_ini_file($config_file, false);
-    $config['fields'] = explode(',', $config['fields']);
+    if($config != false && !empty($config)) 
+    {
+        // Splitting the fields string into an array
+        $config['fields'] = explode(',', $config['fields']);
+    } else {
+        $config = false;
+    }
 
     return $config;
 }
