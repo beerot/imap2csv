@@ -129,9 +129,6 @@ function parse_mail($inbox, $emails, $fields, $archive_folder)
 {
     $orders = [];
 
-    // Get newest mail on top
-    rsort($emails);
-
     echo "Processing mail";
 
     foreach($emails as $email_number) {
