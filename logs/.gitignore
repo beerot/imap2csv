@@ -1,0 +1,4 @@
+# Will keep empty folder in git but never keep
+# files in it (except .gitignore)
+*
+!.gitignore
