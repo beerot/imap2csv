@@ -22,9 +22,13 @@ function main()
         $config['username'], $config['password'])
         or die("Couldn't connect to mail server.\n");
 
-    if(archive_folder_exists($inbox, $config['archive']) == false)
+    if(archive_folder_exists($inbox, $config['hostname'], $config['archive']) == false)
     {
-        create_archive_folder($inbox, $config['archive']);    
+        if((imap_createmailbox($inbox, $config['hostname'].$config['archive'])) == false)
+        {
+            imap_close($inbox);
+            die("Could not create archive folder");       
+        }
     }
     
     // Get the emails that interest us
@@ -150,12 +154,13 @@ function parse_mail($inbox, $emails, $fields, $archive_folder)
 }
 
 // Tests if the archive folder we requested exists
-function archive_folder_exists($mail_handle, $folder)
+function archive_folder_exists($mail_handle, $hostname, $folder)
 {
-    //$folder_list = imap_list($mail_handle, $
+    $folder_list = imap_list($mail_handle, $hostname, "*");
 
-    return true;
+    return array_search($hostname.$folder, $folder_list);
 }
+
 
 // Start program
 main();
