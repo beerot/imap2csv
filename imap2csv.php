@@ -12,14 +12,20 @@ function main()
     global $config_file;
     $orders = []; // An array that keeps one row per parsed mail
 
-    if($config = @get_config($config_file) == false)
+    if(($config = @get_config($config_file)) == false)
     {
         die("Could not read configuration file.\n");
     }
 
     // Open connection to IMAP server
-      $inbox = @imap_open($config['hostname'], $config['username'], $config['password'])
+    $inbox = @imap_open($config['hostname'].$config['folder'], 
+        $config['username'], $config['password'])
         or die("Couldn't connect to mail server.\n");
+
+    if(archive_folder_exists($inbox, $config['archive']) == false)
+    {
+        create_archive_folder($inbox, $config['archive']);    
+    }
     
     // Get the emails that interest us
     $emails = imap_search($inbox, "FROM " . $config['sender']);
@@ -141,6 +147,14 @@ function parse_mail($inbox, $emails, $fields, $archive_folder)
     echo "\n";
 
     return $orders;
+}
+
+// Tests if the archive folder we requested exists
+function archive_folder_exists($mail_handle, $folder)
+{
+    //$folder_list = imap_list($mail_handle, $
+
+    return true;
 }
 
 // Start program
